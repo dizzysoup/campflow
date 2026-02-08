@@ -3,7 +3,7 @@ import Provider from "./components/ui/provider";
 import { BrowserRouter,Routes,Route } from "react-router-dom";
 import Home from "./Home";
 import Login from "./Login";
-import Rent from "./Rent" ; 
+import RentPage from "./RentPage/RentPage"; 
 import RequireAuth from "./RequireAuth";
 import Navbar from "./components/ui/navbar";
 import { HStack } from "@chakra-ui/react";
@@ -30,7 +30,7 @@ function App() {
               element={
                 <RequireAuth>
                     <Navbar/>
-                    <Rent />                
+                    <RentPage />                
                 </RequireAuth>
               }
             />
