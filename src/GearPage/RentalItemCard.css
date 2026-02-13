@@ -6,6 +6,12 @@
   overflow-y: auto;
 }
 
+.item {
+  display: inline-block;
+  border-bottom: 3px solid #88A285; /* 露營風綠色 */
+  padding-bottom: 2px;
+}
+
 /* 單一卡片主體 */
 .rental-card {
   display: flex;
@@ -13,8 +19,8 @@
   background-color: #FFF9ED;
   border: 2px solid #5B6D5B;
   border-radius: 20px;
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 10px;
+  margin-bottom: 5px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 0px rgba(0, 0, 0, 0.05);

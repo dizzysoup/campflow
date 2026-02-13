@@ -8,7 +8,7 @@ import GearPage from "./GearPage/GearPage";
 import RequireAuth from "./RequireAuth";
 import Navbar from "./components/ui/navbar";
 import { Box } from "@chakra-ui/react";
-
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   return (
@@ -46,7 +46,8 @@ function App() {
                   <Box h="100vh" display="flex" flexDirection="column" overflow="hidden">
                     <Navbar/>
                     <Box flex="1" overflowY="auto" position="relative">
-                      <GearPage />
+                      <GearPage />       
+                      <Toaster />               
                     </Box>      
                   </Box> 
                 </RequireAuth>
