@@ -1,0 +1,107 @@
+/* 容器：綠色底色區域，讓卡片有滑動感 */
+.rental-list-container {
+  background-color: #86A686; /* 與圖片底色一致 */
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* 單一卡片主體 */
+.rental-card {
+  display: flex;
+  align-items: center;
+  background-color: #FFF9ED;
+  border: 2px solid #5B6D5B;
+  border-radius: 20px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 0px rgba(0, 0, 0, 0.05);
+  width: 300px;
+}
+
+.rental-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0px rgba(74, 55, 40, 0.1);
+}
+
+.rental-icon-wrapper {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  background-color: #E8F0E8;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-right: 16px;
+  border: 1px solid #D1D9D1;
+}
+
+.rental-info {
+  flex-grow: 1;
+}
+
+.rental-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.rental-title {
+  color: #4A3728;
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.rental-price {
+  color: #5B6D5B;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* 底部細節文字 */
+.rental-footer {
+  display: flex;
+  gap: 12px;
+  font-size: 1.0rem;
+  color: #7C8B7C;
+}
+
+.rental-payee {
+  color: #A67C52; /* 王小王的顏色 */
+  font-weight: bold;
+}
+
+.rental-status-tag {
+  font-size: 10px;
+  background: #8DA38D;
+  color: black;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.rental-arrow-icon {
+  margin-left: 8px;
+  width: 20px;
+  height: 20px;
+  /* 使用 CSS 繪製一個 > 符號，不需要任何外部圖片 */
+  border-top: 3px solid #5B6D5B;
+  border-right: 3px solid #5B6D5B;
+  transform: rotate(45deg);
+  display: inline-block;
+  flex-shrink: 0;
+  border-radius: 2px; /* 讓轉角微圓，符合你的插畫風 */
+  margin-right: 8px; /* 稍微往左推一點 */
+}
+
+/* 如果覺得箭頭太大，可以調整縮放 */
+.rental-arrow-icon {
+  width: 10px;
+  height: 10px;
+}

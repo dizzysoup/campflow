@@ -260,8 +260,8 @@ export const CreateExpenseForm = () => {
 
           {/* 新增按鈕 */}
           <Button 
-            bg="#8DA38D" 
-            color="white" 
+            bg="#958de3" 
+            color="black" 
             h="50px"
             borderRadius="15px"
             borderBottom="4px solid #5B6D5B"

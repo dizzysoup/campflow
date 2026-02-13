@@ -16,7 +16,7 @@ export default function Navbar() {
   const location = useLocation();
 
   return (
-    <Box   w="100%">
+    <Box w="100%" flexShrink={0} zIndex="1000">
         <Box bg="rgba(255,255,255,0.35)" > 
            <Image
                 src={campingImg}
@@ -26,8 +26,7 @@ export default function Navbar() {
                 objectFit="cover"
             />
         </Box>
-        <HStack
-           
+        <HStack            
             top="0"
             left="0"
             w="100%"

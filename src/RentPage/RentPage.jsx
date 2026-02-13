@@ -25,26 +25,27 @@ const RentalItemCard = ({ item }) => {
         p={2} />
 
       {/* 中間資訊區 */}
-      <div className="rental-content">
-        <div className="rental-header">
-          <h3 className="rental-title">
-            {item.itemName}
-          </h3>
-          <span className="rental-status-badge">
-            租借中
-          </span>
-        </div>
-        
-        <div className="rental-details">
-          <p className="rental-price">
-            NT$ {item.price}
-          </p>
-          <div className="rental-meta">
-            <span className="rental-footer">租借人：{item.manager}</span>           
+      <Box ml="10px">
+          <div className="rental-content">
+            <div className="rental-header">
+              <h3 className="rental-title">
+                {item.itemName}
+              </h3>
+              <span className="rental-status-badge">
+                租借中
+              </span>
+            </div>
+            
+            <div className="rental-details">
+              <p className="rental-price">
+                NT$ {item.price}
+              </p>
+              <div className="rental-meta">
+                <span className="rental-footer">負責人：{item.manager}</span>           
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
+      </Box>
       {/* 右側箭頭 */}
       <Spacer/>
       <div className="rental-arrow-icon"></div>
@@ -69,8 +70,7 @@ function RentPage(){
           payee: data.payee, // 分擔方式
           createdAt: data.createdAt  // 如果你有存時間戳記的話
         };
-      });
-      console.log(rentalsData);
+      });     
       setRentalsList(rentalsData);     
     };
     fetchRentalsList();
@@ -99,9 +99,10 @@ function RentPage(){
       >
         <Button 
           onClick={() => setOpen(true)}
-          bg="#8DA38D" 
-          color="white" 
-          borderRadius="20px"
+          bg="#958de3" 
+          color="black" 
+          borderRadius="20px"          
+          borderBottom="4px solid #5B6D5B"
           px={8}
           _hover={{ bg: '#7A8F7A' }}
         >
@@ -133,7 +134,7 @@ function RentPage(){
           left="0" 
           right="0" 
           h="auto"
-          maxH="80vh"
+          maxH="70vh"
           bg="#86A686" 
           borderTopRadius="30px" 
           p={0}
@@ -162,6 +163,7 @@ function RentPage(){
           {/* 內容區塊 */}
           <Dialog.Body 
             p={0}            
+            overflow="auto"
             flex="1" // 讓內容區自動填滿剩餘高度
           >
             <CreateExpenseForm />
