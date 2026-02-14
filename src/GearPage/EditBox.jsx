@@ -1,13 +1,22 @@
 import { useState } from "react";
-import { Box, Portal, VStack, Text, Stack, Input, HStack, Button, Select } from "@chakra-ui/react";
+import { 
+  Box, Portal, VStack, Text, Stack, Input, 
+  HStack, Button, Select, Textarea 
+} from "@chakra-ui/react";
 import CategoryBlock from "./CategoryBlock";
+import {SelectManagerBlock} from "./SelectManagerBlock";
 
+// 修改視窗的格子
 export const EditBox = ({ item, onClose, onSave, userCollection }) => {
   const [tempNum, setTempNum] = useState(item.num);
-  const [tempManager, setTempManager] = useState(item.manager);
+  const [tempManager, setTempManager] = useState(item.manager); // 負責人修改的暫存狀態
+  const [assignees, setAssignees] = useState(item.assignees || []); // 多人指派的細節資料
+
+  // 新增備註狀態，預設為 item 原有的備註或空字串
+  const [tempNote, setTempNote] = useState(item.note || "");
   
   const [category, setCategory] = useState({ category: item.category || "" });
-
+  
   return (
     <Portal>
       {/* 1. 全螢幕背景遮罩 */}
@@ -19,7 +28,7 @@ export const EditBox = ({ item, onClose, onSave, userCollection }) => {
         bottom={0} 
         bg="blackAlpha.600" 
         zIndex={6000} 
-        onClick={onClose} // 點擊這裡會關閉
+        onClick={onClose} 
       />
       
       {/* 2. 調整內容盒 */}
@@ -33,11 +42,10 @@ export const EditBox = ({ item, onClose, onSave, userCollection }) => {
         bg="white"
         p={6}
         borderRadius="20px"
-        zIndex={6001} // 確保比遮罩高
+        zIndex={6001}
         gap={5}
         boxShadow="2xl"
         align="stretch"
-        // 關鍵：阻止點擊內容盒時觸發背景的 onClose
         onClick={(e) => e.stopPropagation()} 
       >
         <Text fontSize="xl" fontWeight="bold" color="teal.700" textAlign="center">
@@ -61,34 +69,33 @@ export const EditBox = ({ item, onClose, onSave, userCollection }) => {
           />
         </Stack>
 
-        {/* 負責人修改 */}
-        <Stack gap={1}>
-          <Text color="#4A3728" fontWeight="bold">負責人修改</Text> 
-          <Select.Root 
-            collection={userCollection} 
-            value={[tempManager]} 
-            onValueChange={(e) => setTempManager(e.value[0])}
-          >
-            <Select.Control>
-              <Select.Trigger bg="#FFF9ED" border="2px solid #5B6D5B" borderRadius="15px" color="black">
-                <Select.ValueText placeholder={tempManager || "選擇人員"} />
-              </Select.Trigger>
-            </Select.Control>
-            
-              <Select.Positioner zIndex={7000}>
-                <Select.Content bg="white" border="2px solid #5B6D5B">
-                  {userCollection.items.map((u) => (
-                    <Select.Item item={u} key={u.value} cursor="pointer" color="black">
-                      {u.label}
-                      <Select.ItemIndicator />
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Positioner>
-          </Select.Root>
-        </Stack>
+        <SelectManagerBlock
+          manager={tempManager}
+          setManager={setTempManager}
+          assignees={assignees}
+          setAssignees={setAssignees}
+          userCollection={userCollection}
+        />
 
+          {/* 分類選擇 */}
         <CategoryBlock formData={category} setFormData={setCategory} />
+
+        
+        <Stack gap={1}>
+          <Text color="#4A3728" fontWeight="bold">備註：</Text>
+          <Textarea 
+            placeholder="請輸入備註資訊..."
+            value={tempNote}
+            onChange={(e) => setTempNote(e.target.value)}
+            bg="#FFF9ED"
+            border="2px solid #5B6D5B"
+            borderRadius="15px"
+            color="black"
+            _focus={{ borderColor: "teal.500" }}
+            resize="none" // 防止使用者隨意拉伸破壞排版
+            rows={3}
+          />
+        </Stack>
 
         {/* 操作按鈕 */}
         <HStack gap={3} mt={2}>
@@ -97,7 +104,14 @@ export const EditBox = ({ item, onClose, onSave, userCollection }) => {
             colorPalette="teal" 
             h="50px" 
             borderRadius="12px"
-            onClick={() => onSave({ ...item, num: tempNum, manager: tempManager, category: category })}
+            onClick={() => onSave({ 
+              ...item,            
+              num: tempNum, 
+              manager: tempManager, 
+              category: category.category, // 注意這裡取 category 裡的值
+              note: tempNote ,
+              assignees: assignees
+            })}
           >
             儲存修改
           </Button>
@@ -105,13 +119,14 @@ export const EditBox = ({ item, onClose, onSave, userCollection }) => {
           <Button 
             flex={1} 
             variant="outline" 
-            color="black" 
+            color="white" 
             bg="red.500"
+            _hover={{ bg: "red.600" }}
             h="50px" 
             borderRadius="12px" 
             onClick={onClose}
           >
-            刪除
+            關閉
           </Button>
         </HStack>
       </VStack>

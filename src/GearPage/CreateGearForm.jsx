@@ -3,7 +3,7 @@ import {
   Stack, Accordion, Container, VStack, Text ,Field, SelectRoot ,
   createListCollection , SelectTrigger ,
   SelectItem, SelectContent ,
-  SelectValueText,Portal, Flex,Spacer,
+  SelectValueText,Portal, Flex,Spacer,Textarea,
   Box,  
   HStack,  SimpleGrid,
   Input,Select,
@@ -16,47 +16,56 @@ import { FaTag, FaCamera } from 'react-icons/fa';
 import "./RentalItemCard.css"
 import CategoryBlock from "./CategoryBlock";
 import { toaster } from "../components/ui/toaster";
+import { create } from "framer-motion/m";
+import { SelectManagerBlock } from "./SelectManagerBlock";
 
-export const CreateGearForm = ({ onClose }) => {
+export const CreateGearForm = ({ onClose , userCollection }) => {
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     itemName: "",
-    num: "",
-    manager: "",
+    num: "",    
     iconpath: "",
-    category : ""
-  });
-  
-  const [isIconBlockOpen, setIsIconBlockOpen] = useState(false);
-  const [Icon, setIcon] = useState(null);
+    category : "",
+    note : "",
+    manager: "", // 負責人
+    assignees: [{ userId: "", count: 1 }] // 多人指派
+  }); 
 
-  const userCollection = createListCollection({
-    items: users,
-  });
+  const [tempManager, setTempManager] = useState(""); // 選擇負責人的方式
+  const [tempAssignments, setTempAssignments] = useState([]); // 多人指派的細節資料
 
-  // 1. 修正：fetchUsers 應該放在 useEffect 裡，否則會無限迴圈請求
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      const userList = querySnapshot.docs.map(doc => ({
-        label: doc.data().uname,
-        value: doc.data().uname,
-      }));
-      const placeholderOption = { label: "從缺", value: "從缺" };
-      setUsers([placeholderOption, ...userList]);
-    };
-    fetchUsers();
-  }, []);
 
-  
-  const handleAdd = async () => {
-    const docData = {
+  const handleAdd = async () => {  
+    if (!tempManager) {
+      toaster.create({ title: "請選擇負責人或勾選各自準備", type: "error" });
+      return;
+    }
+
+    if (!formData.itemName.trim()) {
+      toaster.create({ title: "請輸入物品名稱", type: "error" });
+      return;
+    }
+    if (!formData.num || Number(formData.num) <= 0) {
+      toaster.create({ title: "請輸入有效的數量", type: "error" });
+      return;
+    }
+    
+    if (!formData.category) {
+      toaster.create({ title: "請選擇一個分類", type: "error" });
+      return;
+    }
+     const docData = {
       itemName: formData.itemName,
       num: Number(formData.num),
-      manager: formData.manager,      
-      category: formData.category,
+      manager: tempManager , 
+      assignees: tempAssignments, // 陣列
+      category: formData.category,      
+      note: formData.note,
+      createdAt: serverTimestamp(), 
     };
+    
     await addDoc(collection(db, "gear"), docData);
+   
     setFormData({ itemName: "", num: "", manager: "", category: ""});
     toaster.create({
       title: "新增成功",
@@ -103,36 +112,32 @@ export const CreateGearForm = ({ onClose }) => {
               onChange={(e) => setFormData(prev => ({ ...prev, num: e.target.value }))}
             />
          </Stack>
-        {/* 負責人欄位 */}
-        <HStack gap={4} align="flex-end">
-        <Stack flex={1} gap={1}>
-        <Text color="#4A3728" fontWeight="bold">負責人</Text> 
-        <Select.Root 
-          collection={userCollection} 
-          value={[formData.manager]} 
-          onValueChange={(e) => setFormData(prev => ({ ...prev, manager: e.value[0] }))}
-        >
-          <Select.Control>
-            <Select.Trigger color="black">
-              <Select.ValueText placeholder={formData.manager || "選擇人員"} />
-            </Select.Trigger>
-          </Select.Control>
-          <Portal>
-            <Select.Positioner zIndex={2000}>
-              <Select.Content bg="white"> {/* 建議加背景色，避免 Portal 後透明 */}
-                {userCollection.items.map((u) => (
-                  <Select.Item item={u} key={u.value} cursor="pointer" color="black">
-                      {u.label}
-                      <Select.ItemIndicator /> </Select.Item> ))}
-              </Select.Content>
-            </Select.Positioner>
-          </Portal>
-        </Select.Root>
-         </Stack> 
-       </HStack>
+
+        {/* 負責人選擇 */}
+        <SelectManagerBlock manager={tempManager} 
+         setManager={setTempManager}
+         assignees={tempAssignments}
+         setAssignees={setTempAssignments}
+         userCollection={userCollection} />
 
         {/* 分類標籤 */}
         <CategoryBlock formData={formData} setFormData={setFormData} />
+
+        <Stack gap={1}>
+          <Text color="#4A3728" fontWeight="bold">備註：</Text>
+          <Textarea 
+            placeholder="請輸入備註資訊..."
+            value={formData.note}
+            onChange={(e) => setFormData(prev => ({ ...prev, note: e.target.value }))}
+            bg="#FFF9ED"
+            border="2px solid #5B6D5B"
+            borderRadius="15px"
+            color="black"
+            _focus={{ borderColor: "teal.500" }}
+            resize="none" // 防止使用者隨意拉伸破壞排版
+            rows={3}
+          />
+        </Stack>
 
         {/* 新增按鈕 */}
          <Button 
