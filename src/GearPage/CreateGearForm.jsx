@@ -35,7 +35,16 @@ export const CreateGearForm = ({ onClose , userCollection }) => {
   const [tempAssignments, setTempAssignments] = useState([]); // 多人指派的細節資料
 
 
-  const handleAdd = async () => {  
+  const handleAdd = async () => {
+    const authStatus = localStorage.getItem("auth");
+    if (authStatus === "guest") {
+        toaster.create({ 
+          title: "權限不足", 
+          description: "訪客模式僅供瀏覽，請登入後再操作。", 
+          type: "error" 
+        });
+        return;
+    }  
     if (!tempManager) {
       toaster.create({ title: "請選擇負責人或勾選各自準備", type: "error" });
       return;

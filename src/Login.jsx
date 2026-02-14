@@ -11,25 +11,18 @@ import {
 } from "@chakra-ui/react";
 import campingImg from "./assets/camping.png";
 
+
 export default function Login() {
   const navigate = useNavigate();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // 跟圖片一致的粉彩色系（你可再微調）
   const palette = useMemo(
     () => ({
-      pageBgTop: "#EAF4EF",     // 淡薄荷綠天空
-      pageBgBottom: "#DDECD8",  // 淡草綠
-      cardBg: "#FFF7E9",        // 帳棚奶油色
-      border: "#D4E2D5",        // 淡灰綠線
-      text: "#2F3A34",          // 深灰綠字
-      muted: "#66736C",         // 次要字
-      btn: "#7FAE86",           // 草綠按鈕
-      btnHover: "#6C9F76",
-      danger: "#C35A5A",        // 柔和紅（錯誤）
-      inputBg: "#FFFFFF",
+      // ... 保持原有 palette 不變
+      guestBtn: "transparent",
+      guestText: "#66736C",
     }),
     []
   );
@@ -37,14 +30,20 @@ export default function Login() {
   const onSubmit = (e) => {
     e.preventDefault();
     setError("");
-
-    // 示範：先用硬編碼
+    setError("帳號或密碼錯誤");
+    return ;
     if (account === "admin" && password === "1234") {
       localStorage.setItem("auth", "1");
       navigate("/", { replace: true });
       return;
     }
     setError("帳號或密碼錯誤");
+  };
+
+  // 新增訪客登入邏輯
+  const handleGuestLogin = () => {
+    localStorage.setItem("auth", "guest"); // 標記為訪客身分
+    navigate("/", { replace: true });
   };
 
   return (
@@ -82,40 +81,35 @@ export default function Login() {
         <Box p="6">
           <Stack spacing="4" as="form" onSubmit={onSubmit}>
             <Box>
-              <Heading size="2xl" color={palette.text} textAlign="center">
-                露營去
-              </Heading>
-              <Text mt="1" fontSize="sm" color={palette.muted}>
-               （測試帳密：admin / 1234）
-              </Text>
+              <Heading size="xl" color={palette.text} textAlign="center">
+                王幾蛋露營去
+              </Heading>              
             </Box>
 
             <Box h="1px" bg={palette.border} />
 
+            {/* 輸入框區塊 */}
             <Stack spacing="3">
               <Box>
-                <Text mb="1" fontSize="sm" color={palette.text}>
+                <Text mb="1" fontSize="sm" color={palette.text} fontWeight="medium">
                   帳號
                 </Text>
                 <Input
                   value={account}
                   onChange={(e) => setAccount(e.target.value)}
                   placeholder="輸入帳號"
-                  autoComplete="username"
-                  bg={palette.inputBg}
+                  bg="white"
                   borderColor={palette.border}
                   borderRadius="16px"
-                  _placeholder={{ color: "#9AA7A0" }}
-                  _focus={{
-                        borderColor: palette.btn,
-                        boxShadow: "0 0 0 1px " + palette.btn, // 可選，模擬 focus ring
-                    }}
-                  color="black"                  
+                  h="44px"
+                  
+                  _focus={{ borderColor: palette.btn, boxShadow: `0 0 0 1px ${palette.btn}` }}
+                  color="black"
                 />
               </Box>
 
               <Box>
-                <Text mb="1" fontSize="sm" color={palette.text}>
+                <Text mb="1" fontSize="sm" color={palette.text} fontWeight="medium">
                   密碼
                 </Text>
                 <Input
@@ -123,49 +117,54 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="輸入密碼"
-                  autoComplete="current-password"
-                  bg={palette.inputBg}
+                  bg="white"
                   borderColor={palette.border}
                   borderRadius="16px"
-                  _placeholder={{ color: "#9AA7A0" }}
-                  _focus={{
-                        borderColor: palette.btn,
-                        boxShadow: "0 0 0 1px " + palette.btn, // 可選，模擬 focus ring
-                    }}
+                  h="44px"
+                  _focus={{ borderColor: palette.btn, boxShadow: `0 0 0 1px ${palette.btn}` }}
                   color="black"
                 />
               </Box>
 
-              {error ? (
-                <Box
-                  border="1px solid"
-                  borderColor="rgba(195,90,90,0.35)"
-                  bg="rgba(195,90,90,0.08)"
-                  borderRadius="16px"
-                  px="3"
-                  py="2"
-                >
-                  <Text fontSize="sm" color={palette.danger}>
-                    {error}
-                  </Text>
+              {error && (
+                <Box border="1px solid" borderColor="rgba(195,90,90,0.35)" bg="rgba(195,90,90,0.08)" borderRadius="12px" px="3" py="2">
+                  <Text fontSize="xs" color={palette.danger}>{error}</Text>
                 </Box>
-              ) : null}
+              )}
             </Stack>
 
-            <Button
-              type="submit"
-              bg={palette.btn}
-              color="white"
-              borderRadius="18px"
-              h="44px"
-              _hover={{ bg: palette.btnHover }}
-              _active={{ transform: "translateY(1px)" }}
-            >
-              登入
-            </Button>
+            {/* 按鈕組 */}
+            <Stack spacing="2" mt="2">
+              <Button
+                type="submit"
+                bg="blue.600"
+                color="black"
+                borderRadius="18px"
+                h="48px"
+                fontWeight="bold"
+                _hover={{ bg: palette.btnHover }}
+                _active={{ transform: "translateY(1px)" }}
+              >
+                登入系統
+              </Button>
+
+              <Button
+                variant="outline"
+                borderColor={palette.btn}
+                color={palette.btn}
+                borderRadius="18px"
+                h="48px"
+                fontWeight="medium"
+                bg="gray"
+                _hover={{ bg: "rgba(127, 174, 134, 0.1)" }}
+                onClick={handleGuestLogin}
+              >
+                先隨便逛逛 (訪客模式)
+              </Button>
+            </Stack>
 
             <Text fontSize="xs" color={palette.muted} textAlign="center">
-              註冊:施工中
+              還沒有帳號？ 註冊功能施工中 🚧
             </Text>
           </Stack>
         </Box>

@@ -2,16 +2,17 @@ import { useState, useEffect, useMemo } from "react"; // 加入 useMemo 效能�
 import { Box, Text, Button, Dialog, Flex, Spacer, Image, HStack } from "@chakra-ui/react";
 import { db } from "../firebase"; 
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
-import { CreateGearForm } from "./CreateGearForm";
+import { CreateBuyForm } from "./CreateBuyForm";
 import { motion } from "framer-motion";
 import { EditBox } from "./EditBox";
 import { createListCollection } from "@chakra-ui/react"; 
-import { GearItemCard } from "./GearItemCard";
+import { BuyItemCard } from "./BuyItemCard";
 // 匯入 Select 相關組件進行篩選 UI 製作
 import { SelectRoot, SelectTrigger, SelectValueText, SelectContent, SelectItem, Portal,VStack,SelectPositioner  } from "@chakra-ui/react";
 import { toaster } from "../components/ui/toaster";
 
-function GearPage(){
+
+function BuyPage(){
   const [rentalsList, setRentalsList] = useState([]);
   const [open, setOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
@@ -27,7 +28,7 @@ function GearPage(){
   // 1. 取得資料邏輯 (保持不變)
   useEffect(() => {
     const fetchRentalsList = async () => {
-      const querySnapshot = await getDocs(collection(db, "gear"));
+      const querySnapshot = await getDocs(collection(db, "buy"));
       const rentalsData = querySnapshot.docs.map(doc => {
         const data = doc.data();
         return {
@@ -99,7 +100,7 @@ function GearPage(){
                 fontSize="md"
                 letterSpacing="wider"
               >
-                要攜帶的東西
+                要購買的東西
               </Text>
         </Box>
 
@@ -157,7 +158,7 @@ function GearPage(){
         {/* 使用 filteredList 而不是 rentalsList */}
         {filteredList.length > 0 ? (
           filteredList.map(item => (
-            <GearItemCard 
+            <BuyItemCard 
               key={item.id} 
               item={item} 
               onEdit={(selectedItem) => setEditingItem(selectedItem)} 
@@ -178,12 +179,12 @@ function GearPage(){
               try {
                 const authStatus = localStorage.getItem("auth");
                 if (authStatus === "guest") {
-                  toaster.create({ 
-                    title: "權限不足", 
-                    description: "訪客模式僅供瀏覽，請登入後再操作。", 
-                    type: "error" 
-                  });
-                  return;
+                    toaster.create({
+                        title: "權限不足",
+                        description: "訪客模式僅供瀏覽，請登入後再操作。",
+                        type: "error"
+                    });
+                    return;
                 }
                 const gearRef = doc(db, "gear", newData.id); 
                 await updateDoc(gearRef, {
@@ -205,7 +206,7 @@ function GearPage(){
       {/* 新增按鈕與 Dialog 保持不變 ... */}
       <Box position="fixed" bottom="40px" left="50%" transform="translateX(-50%)" zIndex={10}>
         <Button onClick={() => setOpen(true)} bg="#958de3" color="black" borderRadius="20px" borderBottom="4px solid #5B6D5B" px={8}>
-          新增用具
+          新增購買物品
         </Button>
       </Box> 
 
@@ -261,7 +262,7 @@ function GearPage(){
                 overflowY="auto"  
                 flex="1" // 讓內容區自動填滿剩餘高度
               >
-                <CreateGearForm onClose={() => setOpen(false)} userCollection={userCollection} />
+                <CreateBuyForm onClose={() => setOpen(false)} userCollection={userCollection} />
               </Dialog.Body>
             </Dialog.Content>
       </Dialog.Root>  
@@ -269,4 +270,4 @@ function GearPage(){
   );
 }
 
-export default GearPage;
+export default BuyPage;

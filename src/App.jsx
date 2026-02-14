@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Provider from "./components/ui/provider";
 import { BrowserRouter,Routes,Route } from "react-router-dom";
-import Home from "./Home";
+import HomePage from "./HomePage/HomePage";
 import Login from "./Login";
 import RentPage from "./RentPage/RentPage"; 
 import GearPage from "./GearPage/GearPage";
+import BuyPage from "./BuyPage/BuyPage";
+import ClaimPage from "./ClaimPage/ClaimPage";
 import RequireAuth from "./RequireAuth";
 import Navbar from "./components/ui/navbar";
 import { Box } from "@chakra-ui/react";
@@ -22,7 +24,7 @@ function App() {
               element={
                 <RequireAuth>
                     <Navbar/>
-                    <Home />                
+                    <HomePage />                
                 </RequireAuth>
               }
             />
@@ -47,6 +49,35 @@ function App() {
                     <Navbar/>
                     <Box flex="1" overflowY="auto" position="relative">
                       <GearPage />       
+                      <Toaster />               
+                    </Box>      
+                  </Box> 
+                </RequireAuth>
+              }
+            />
+             <Route 
+              path="/buy"
+              element={
+                <RequireAuth>
+                  <Box h="100vh" display="flex" flexDirection="column" overflow="hidden">
+                    <Navbar/>
+                    <Box flex="1" overflowY="auto" position="relative">
+                      <BuyPage />       
+                      <Toaster />               
+                    </Box>      
+                  </Box> 
+                </RequireAuth>
+              }
+            />
+
+            <Route 
+              path="/claim"
+              element={
+                <RequireAuth>
+                  <Box h="100vh" display="flex" flexDirection="column" overflow="hidden">
+                    <Navbar/>
+                    <Box flex="1" overflowY="auto" position="relative">
+                      <ClaimPage />       
                       <Toaster />               
                     </Box>      
                   </Box> 
