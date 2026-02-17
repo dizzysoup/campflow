@@ -36,7 +36,7 @@ function HomePage(){
         {/* 營區地圖 */}
         <Card.Root overflow="hidden" borderRadius="xl" boxShadow="sm">
           <Image 
-            src="../../src/Images/maps.png" 
+            src="/Images/maps.png" 
             alt="營區地圖" 
             objectFit="cover"
             maxH="300px"
@@ -58,7 +58,7 @@ function HomePage(){
             營位配置為木棧板地板，現場貌似備有一個專屬洗手台，方便清洗食材。
           </Text>
           <Image 
-            src="../../src/Images/camping_mouse.png" 
+            src="/Images/camping_mouse.png" 
             alt="大赤鼯鼠區" 
             borderRadius="lg" 
             mb={2}
@@ -80,8 +80,8 @@ function HomePage(){
                   環境較乾淨，設有公共飲水機及冰箱，適合存放冷藏食物。
                 </Text>  
                 <VStack gap={2} align="center" w="100%">
-                  <Image src="../../src/Images/bathroom.png" w="100%" borderRadius="md" alt="新衛浴1" />
-                  <Image src="../../src/Images/bathroom2.png" w="100%" borderRadius="md" alt="新衛浴2" />
+                  <Image src="/Images/bathroom.png" w="100%" borderRadius="md" alt="新衛浴1" />
+                  <Image src="/Images/bathroom2.png" w="100%" borderRadius="md" alt="新衛浴2" />
                 </VStack>             
                 </Card.Body>
             </Card.Root>
@@ -94,7 +94,7 @@ function HomePage(){
                   離大赤鼯鼠區較近，但環境較為簡陋髒亂。
                 </Text>
                 <Image 
-                  src="../../src/Images/bathroom3.png" 
+                  src="/Images/bathroom3.png" 
                   borderRadius="md" 
                   mt={3} 
                   alt="舊衛浴" 
@@ -111,7 +111,7 @@ function HomePage(){
                 可以租借桌遊、吹冷氣避暑，現場亦有提供飲料點餐服務。
               </Text>
               <Image 
-                src="../../src/Images/hell.png" 
+                src="/Images/hell.png" 
                 borderRadius="lg" 
                 alt="公共空間" 
               />

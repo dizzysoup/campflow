@@ -23,8 +23,13 @@ function App() {
               path="/"
               element={
                 <RequireAuth>
+                  <Box h="100vh" display="flex" flexDirection="column" overflow="hidden">
                     <Navbar/>
-                    <HomePage />                
+                    <Box flex="1" overflowY="auto" position="relative">
+                      <HomePage />       
+                      <Toaster />               
+                    </Box>      
+                  </Box> 
                 </RequireAuth>
               }
             />
