@@ -25,7 +25,7 @@ function HomePage(){
           </Heading>
           <HStack justify="center" gap={4}>
             <Badge colorPalette="teal" variant="surface" px={3} py={1} borderRadius="full">
-              <LuCalendarDays /> 2026/03/13 - 03/15
+              <LuCalendarDays /> 2026/03/14 - 03/16
             </Badge>
             <Badge colorPalette="orange" variant="surface" px={3} py={1} borderRadius="full">
               <LuMapPin /> 小路營區

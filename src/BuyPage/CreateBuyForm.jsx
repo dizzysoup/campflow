@@ -7,6 +7,7 @@ import { db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { toaster } from "../components/ui/toaster";
 import { SelectManagerBlock } from "./SelectManagerBlock";
+import { PaymentPayerBlock } from "./PaymentPayerBlock";
 
 export const CreateBuyForm = ({ onClose, userCollection }) => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ export const CreateBuyForm = ({ onClose, userCollection }) => {
 
   const [tempManager, setTempManager] = useState("");
   const [tempAssignments, setTempAssignments] = useState([]);
+  const [payers, setPayers] = useState([{ user: "", amount: 0 }]); // 誰先付款
 
   // 自動計算總價 (使用 useMemo 優化效能)
   const totalPrice = useMemo(() => {
@@ -40,8 +42,8 @@ export const CreateBuyForm = ({ onClose, userCollection }) => {
         return;
     }
      
-    if (!tempManager) {
-      toaster.create({ title: "請選擇負責人", type: "error" });
+    if (!payers) {
+      toaster.create({ title: "請選擇墊款人", type: "error" });
       return;
     }
     if (!formData.itemName.trim()) {
@@ -54,15 +56,15 @@ export const CreateBuyForm = ({ onClose, userCollection }) => {
     }
 
     const docData = {
-      itemName: formData.itemName,
-      num: Number(formData.num),
+      itemName: formData.itemName, // 商品名稱
+      num: Number(formData.num), // 數量
       price: Number(formData.price) || 0, // 儲存單價
       totalPrice: totalPrice, // 儲存總價
-      manager: tempManager, 
-      assignees: tempAssignments,
-      category: formData.category,      
-      note: formData.note,
-      createdAt: serverTimestamp(), 
+      manager: tempManager,  // 分攤者 (平均分攤、各自分攤)
+      assignees: tempAssignments, // 分攤人員資料      
+      note: formData.note, // 備註
+      createdAt: serverTimestamp(), // 建立時間
+      payers: payers.filter(p => p.user && p.amount > 0) // 儲存有效的墊款人資料      
     };
     
     try {
@@ -142,20 +144,29 @@ export const CreateBuyForm = ({ onClose, userCollection }) => {
           boxShadow="inner"
         >
           <HStack justify="flex-end" gap={2}>
-            <Text color="#FFF9ED" fontSize="sm">小計：</Text>
+            <Text color="#FFF9ED" fontSize="sm">總和：</Text>
             <Text color="#FFF9ED" fontSize="2xl" fontWeight="black">
               ${totalPrice.toLocaleString()}
             </Text>
           </HStack>
         </Box>
+        {/* 墊款人選擇 */}
+        <PaymentPayerBlock 
+            payers={payers} 
+            setPayers={setPayers} 
+            userCollection={userCollection} 
+            totalPrice={totalPrice}
+        />
 
-        {/* 負責人選擇 */}
+        {/* 分攤人選擇 */}
         <SelectManagerBlock 
           manager={tempManager} 
           setManager={setTempManager}
           assignees={tempAssignments}
           setAssignees={setTempAssignments}
           userCollection={userCollection} 
+          price={formData.price}
+          totalPrice={totalPrice}
         />
        
         <Stack gap={1}>

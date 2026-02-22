@@ -39,7 +39,10 @@ function BuyPage(){
           category: data.category,        
           num: data.num ,
           note : data.note,
-          assignees: data.assignees || []
+          assignees: data.assignees || [],
+          payers: data.payers || [], // 加入 payers 資料
+          price: data.price || 0, // 單價
+          totalPrice: data.totalPrice || 0 // 總價
         };
       });
       setRentalsList(rentalsData);     
@@ -102,8 +105,7 @@ function BuyPage(){
               >
                 要購買的東西
               </Text>
-        </Box>
-
+        </Box>               
         {/* 篩選 UI 區塊 */}
         <Box>
           <HStack gap={2}>
@@ -148,7 +150,11 @@ function BuyPage(){
           )}
          </Box>
       </HStack> 
-              
+
+      <Text fontSize="xs" color="#5B6D5B" fontWeight="bold" mx="5%">
+            🛒 包含去 Costco 買的
+      </Text>
+
       <Box 
         ml="5%" mr="5%" mt="2%" mb="25%" 
         bg="white" borderRadius="15px" p="2"
@@ -174,7 +180,7 @@ function BuyPage(){
           <EditBox 
             item={editingItem} 
             onClose={() => setEditingItem(null)} 
-            userCollection={userCollection}
+            userCollection={userCollection}           
             onSave={ async (newData ) => {
               try {
                 const authStatus = localStorage.getItem("auth");

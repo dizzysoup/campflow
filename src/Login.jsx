@@ -31,7 +31,7 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setError("帳號或密碼錯誤");
-    return ;
+   
     if (account === "admin" && password === "1234") {
       localStorage.setItem("auth", "1");
       navigate("/", { replace: true });
