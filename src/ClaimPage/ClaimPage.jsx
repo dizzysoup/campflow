@@ -16,6 +16,7 @@ const hammer = keyframes`
   100% { transform: rotate(0deg); }
 `;
 
+{/* 費用結算 */}
 function ClaimPage() {
   const spinAnimation = `${spin} infinite 4s linear`;
   const hammerAnimation = `${hammer} infinite 0.8s ease-in-out`;

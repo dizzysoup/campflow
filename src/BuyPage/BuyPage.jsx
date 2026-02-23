@@ -1,23 +1,44 @@
 import { useState, useEffect, useMemo } from "react"; // 加入 useMemo 效能較好
 import { Box, Text, Button, Dialog, Flex, Spacer, Image, HStack } from "@chakra-ui/react";
 import { db } from "../firebase"; 
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
-import { CreateBuyForm } from "./CreateBuyForm";
+import { collection, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { CreateForm } from "../components/element/CreateForm";
 import { motion } from "framer-motion";
-import { EditBox } from "./EditBox";
+import { EditBox } from "../components/element/EditBox";
 import { createListCollection } from "@chakra-ui/react"; 
 import { BuyItemCard } from "./BuyItemCard";
 // 匯入 Select 相關組件進行篩選 UI 製作
 import { SelectRoot, SelectTrigger, SelectValueText, SelectContent, SelectItem, Portal,VStack,SelectPositioner  } from "@chakra-ui/react";
 import { toaster } from "../components/ui/toaster";
 
+// 刪除物品的函式
+const handleDeleteItem = async (id, itemName , setRefreshFlag) => {
+  try {
+     const itemDoc = doc(db, "buy", id);
+          await deleteDoc(itemDoc);
+          setRefreshFlag(prev => !prev); // 刷新資料
+          toaster.create({
+                  title: "刪除成功",
+                  description: `已刪除物品：${itemName}`,
+                  type: "success",
+          });
+  } catch (error) {
+    console.error("刪除失敗：", error);
+    toaster.create({
+            title: "刪除失敗",
+            description: `無法刪除物品：${itemName}`,
+            type: "error",
+    });
+  }
+}
 
 function BuyPage(){
   const [rentalsList, setRentalsList] = useState([]);
   const [open, setOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [users, setUsers] = useState([]);
-  
+  const [refreshFlag, setRefreshFlag] = useState(false);
+  const dbName = "buy"; // 定義資料庫名稱，方便傳遞給 CreateForm
   // 新增：紀錄篩選的人員 (預設為 "全部")
   const [filterUser, setFilterUser] = useState("全部");
 
@@ -28,7 +49,7 @@ function BuyPage(){
   // 1. 取得資料邏輯 (保持不變)
   useEffect(() => {
     const fetchRentalsList = async () => {
-      const querySnapshot = await getDocs(collection(db, "buy"));
+      const querySnapshot = await getDocs(collection(db, dbName));
       const rentalsData = querySnapshot.docs.map(doc => {
         const data = doc.data();
         return {
@@ -48,7 +69,7 @@ function BuyPage(){
       setRentalsList(rentalsData);     
     };
     fetchRentalsList();
-  }, [open, editingItem]);
+  }, [open, editingItem, refreshFlag]); // 當 open 或 editingItem 變化時重新取得資料
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -167,7 +188,9 @@ function BuyPage(){
             <BuyItemCard 
               key={item.id} 
               item={item} 
+              setRefreshFlag={setRefreshFlag} // 傳遞 setRefreshFlag 以便刪除後刷新列表
               onEdit={(selectedItem) => setEditingItem(selectedItem)} 
+              onDelete={handleDeleteItem}
             />
           ))
         ) : (
@@ -192,13 +215,14 @@ function BuyPage(){
                     });
                     return;
                 }
-                const gearRef = doc(db, "gear", newData.id); 
+                const gearRef = doc(db, dbName, newData.id); 
+                console.log("更新資料：", newData); // 確認接收到的資料
                 await updateDoc(gearRef, {
                   num: Number(newData.num),
-                  manager: newData.manager,
-                  category: newData.category.category ?? newData.category ?? "", 
+                  manager: newData.manager,                  
                   note: newData.note, 
-                  assignees: newData.assignees || [] 
+                  assignees: newData.assignees || [] ,
+                  payers: newData.payers || []
                 });
                 setEditingItem(null);
               } catch (error) {
@@ -268,7 +292,7 @@ function BuyPage(){
                 overflowY="auto"  
                 flex="1" // 讓內容區自動填滿剩餘高度
               >
-                <CreateBuyForm onClose={() => setOpen(false)} userCollection={userCollection} />
+                <CreateForm onClose={() => setOpen(false)} userCollection={userCollection} dbName={dbName} />
               </Dialog.Body>
             </Dialog.Content>
       </Dialog.Root>  

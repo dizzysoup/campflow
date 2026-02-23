@@ -3,13 +3,15 @@ import {
   Stack, Container, VStack, Text,
   Box, HStack, Input, Textarea, Button, SimpleGrid
 } from "@chakra-ui/react";
-import { db } from "../firebase"; 
+import { db } from "../../firebase"; 
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { toaster } from "../components/ui/toaster";
-import { SelectManagerBlock } from "./SelectManagerBlock";
-import { PaymentPayerBlock } from "./PaymentPayerBlock";
+import { toaster } from "../ui/toaster";
+import { SelectManagerBlock } from "../../BuyPage/SelectManagerBlock";
+import { PaymentPayerBlock } from "../../BuyPage/PaymentPayerBlock";
 
-export const CreateBuyForm = ({ onClose, userCollection }) => {
+
+{/* 購買介面、租借介面都使用這個表單組件 */}
+export const CreateForm = ({ onClose, userCollection, dbName }) => {
   const [formData, setFormData] = useState({
     itemName: "",
     num: "",    
@@ -68,7 +70,7 @@ export const CreateBuyForm = ({ onClose, userCollection }) => {
     };
     
     try {
-      await addDoc(collection(db, "buy"), docData);
+      await addDoc(collection(db, dbName), docData);
       setFormData({ itemName: "", num: "", price: "", manager: "", category: "一般", note: "" });
       toaster.create({
         title: "新增成功",

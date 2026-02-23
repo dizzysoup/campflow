@@ -3,8 +3,8 @@ import {
   Box, Portal, VStack, Text, Stack, Input, 
   HStack, Button, Textarea, SimpleGrid 
 } from "@chakra-ui/react";
-import { SelectManagerBlock } from "./SelectManagerBlock";
-import { PaymentPayerBlock } from "./PaymentPayerBlock";
+import { SelectManagerBlock } from "../../BuyPage/SelectManagerBlock";
+import { PaymentPayerBlock } from "../../BuyPage/PaymentPayerBlock";
 
 // 修改視窗的格子
 export const EditBox = ({ item, onClose, onSave, userCollection  }) => {
@@ -142,8 +142,8 @@ export const EditBox = ({ item, onClose, onSave, userCollection  }) => {
               flex={1} bg="teal.600" _hover={{ bg: "teal.700" }} color="white" h="50px" borderRadius="12px"
               onClick={() => onSave({ 
                 ...item, num: tempNum, price: tempPrice,
-                manager: tempManager, category: category.category,
-                note: tempNote, assignees: assignees
+                manager: tempManager,
+                note: tempNote, assignees: assignees,payers: payers,
               })}
             >
               儲存修改
